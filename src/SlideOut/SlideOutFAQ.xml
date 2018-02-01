@@ -80,6 +80,12 @@
 			<description>When the property is filled, the microflow will be triggered when the slide is openend, but not the first time.</description>
 			<returnType type="Void"/>
 		</property>
+		 
+<property key="triggerClass" type="string" required="false">
+	<caption>Extra Trigger Class</caption>
+	<category>Behavior</category>
+	<description>Any click on an element with this class will also toggle the slideout pane.</description>
+</property>
 
     </properties>
 </widget>

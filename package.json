@@ -1,12 +1,11 @@
 {
   "name": "SlideOut",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Upgrade on the slideout widget",
   "license": "Apache 2",
   "author": "J vd Graaf",
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "del": "^2.2.2",
     "gulp": "^3.9.1",

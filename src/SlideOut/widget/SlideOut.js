@@ -22,26 +22,26 @@ define([
     "dojo/ready",
     'SlideOut/lib/jquery-1.11.2'
 ], function(
-// Mixins
-declare,
-_WidgetBase,
-_TemplatedMixin,
-// Client API and DOJO functions
-dom,
-dojoDom,
-domQuery,
-domProp,
-domGeom,
-domClass,
-domAttr,
-domStyle,
-win,
-domConstruct,
-dojoArray,
-dojoLang,
-html,
-ready,
-_jQuery) {
+    // Mixins
+    declare,
+    _WidgetBase,
+    _TemplatedMixin,
+    // Client API and DOJO functions
+    dom,
+    dojoDom,
+    domQuery,
+    domProp,
+    domGeom,
+    domClass,
+    domAttr,
+    domStyle,
+    win,
+    domConstruct,
+    dojoArray,
+    dojoLang,
+    html,
+    ready,
+    _jQuery) {
 
     //"use strict";
     var $ = _jQuery.noConflict(true);
@@ -69,25 +69,25 @@ _jQuery) {
                 sorting: this.seqPriority,
                 control: this.slidecontrol,
                 toppos: this.topPosition,
-				domNode: this.domNode
+                domNode: this.domNode
             }
             window.slideoutstorage.push(this._params);
 
             $(this.slidecontainer).css({
-              'width': this.contentWidth + '%',
-              'right': '-' + this.contentWidth + '%'
+                'width': this.contentWidth + 'px',
+                'right': '-' + this.contentWidth + 'px'
             });
 
-			domClass.add(this.slidebutton, this.buttonClass);
-			domClass.add(this.headerslidebutton, this.headerButtonClass);
-			this.headerText.innerHTML = this.headerButtonString;
+            domClass.add(this.slidebutton, this.buttonClass);
+            domClass.add(this.headerslidebutton, this.headerButtonClass);
+            this.headerText.innerHTML = this.headerButtonString;
 
 
-			if(this.picture) {
-				this.iconTag.src = this.picture;
-			} else {
-				this.iconTag.style = "display:none";
-			}
+            if (this.picture) {
+                this.iconTag.src = this.picture;
+            } else {
+                this.iconTag.style = "display:none";
+            }
         },
 
         // Attach events to HTML dom elements
@@ -95,7 +95,13 @@ _jQuery) {
             logger.debug("Core." + this.id + "._setupEvents hide all content");
             logger.debug(this.id + "._setupEvents");
             this.connect(this.slidebutton, "click", this._toggleContent);
-			this.connect(this.headerslidebutton, "click", this._toggleContent);
+            this.connect(this.headerslidebutton, "click", this._toggleContent);
+            if (this.triggerClass) {
+                var els = document.querySelectorAll("." + this.triggerClass);
+                for (var i = 0; i < els.length; i++) {
+                    this.connect(els[i], "click", this._toggleContent);
+                }
+            }
         },
 
         _toggleContent: function() {
@@ -103,13 +109,17 @@ _jQuery) {
             if (this.contentDisplay) {
                 // hide content
                 logger.debug(this.id + '._toggleContent hide content: ' + this.contentWidth + " showtime: " + this.showTime);
-                $(this.slidecontrol).animate({right: '-=' + this.contentWidth + '%'}, this.showTime, "swing");
-                $(this.slidecontainer).animate({right: '-' + this.contentWidth + '%'}, this.showTime, "swing", function() {
+                $(this.slidecontrol).animate({
+                    right: '-=' + this.contentWidth + 'px'
+                }, this.showTime, "swing");
+                $(this.slidecontainer).animate({
+                    right: '-' + this.contentWidth + 'px'
+                }, this.showTime, "swing", function() {
                     self._toggleOtherButtons(true);
                     self._setStyleText(this.slidecontent, "display:none;");
                 });
 
-				$(this.domNode).removeClass("open");
+                $(this.domNode).removeClass("open");
                 this.contentDisplay = false;
                 $(window).off("click");
 
@@ -118,12 +128,16 @@ _jQuery) {
                 self._setStyleText(self.slidecontent, "display:block;");
                 self._loadPage();
                 logger.debug(this.id + '._toggleContent show content ' + this.contentWidth + " showtime: " + this.showTime);
-                $(this.slidecontrol).animate({right: '+=' + this.contentWidth + '%'}, this.showTime, "swing");
-                $(this.slidecontainer).animate({right: '0px'}, this.showTime, "swing");
+                $(this.slidecontrol).animate({
+                    right: '+=' + this.contentWidth + 'px'
+                }, this.showTime, "swing");
+                $(this.slidecontainer).animate({
+                    right: '0px'
+                }, this.showTime, "swing");
 
                 this._toggleOtherButtons(false);
 
-				$(this.domNode).addClass("open");
+                $(this.domNode).addClass("open");
                 this.contentDisplay = true;
 
                 /*$(window).click(dojoLang.hitch(this, function(e) {
@@ -141,18 +155,18 @@ _jQuery) {
                 for (var j = 0; j < window.slideoutstorage.length; j++) {
                     var item = window.slideoutstorage[j];
                     if (item.id !== this.id) {
-						if (this.hideOthers) {
-							if (item.contentDisplay) { // the item is visible
-								item._toggleContent();
-							}
-						} else {
-							if (visible) {
-								this._setStyleText(item.control, "z-index:10000; right: 0px; top: " + item.toppos + "px;");
-							} else {
-								this._setStyleText(item.control, "z-index:9000; right: 0px; top: " + item.toppos + "px;");
-								$(item.domNode).addClass("open");
-							}
-						}
+                        if (this.hideOthers) {
+                            if (item.contentDisplay) { // the item is visible
+                                item._toggleContent();
+                            }
+                        } else {
+                            if (visible) {
+                                this._setStyleText(item.control, "z-index:10000; right: 0px; top: " + item.toppos + "px;");
+                            } else {
+                                this._setStyleText(item.control, "z-index:9000; right: 0px; top: " + item.toppos + "px;");
+                                $(item.domNode).addClass("open");
+                            }
+                        }
                     }
                 }
             }

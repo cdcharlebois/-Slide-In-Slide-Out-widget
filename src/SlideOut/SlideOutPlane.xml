@@ -63,5 +63,11 @@
             <description>The content of that page will be loaded in the widget</description>
         </property>
 
+        <property key="triggerClass" type="string" required="false">
+          <caption>Extra Trigger Class</caption>
+          <category>Behavior</category>
+          <description>Any click on an element with this class will also toggle the slideout pane.</description>
+        </property>
+
     </properties>
 </widget>
