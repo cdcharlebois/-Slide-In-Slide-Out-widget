@@ -53,6 +53,7 @@ define([
 
         contentDisplay: false,
         contentSet: false,
+        renderInline: null, // should the button render as a handle or inline?
         _contextObj: null,
         _params: null,
         _pageContext: null,
@@ -82,7 +83,6 @@ define([
             domClass.add(this.headerslidebutton, this.headerButtonClass);
             this.headerText.innerHTML = this.headerButtonString;
 
-
             if (this.picture) {
                 this.iconTag.src = this.picture;
             } else {
@@ -92,16 +92,14 @@ define([
 
         // Attach events to HTML dom elements
         _setupEvents: function() {
+            // adding this here because logic.
+            if (this.renderInline) {
+                domClass.remove(this.slidecontrol, "slideout-control");
+            }
             logger.debug("Core." + this.id + "._setupEvents hide all content");
             logger.debug(this.id + "._setupEvents");
             this.connect(this.slidebutton, "click", this._toggleContent);
             this.connect(this.headerslidebutton, "click", this._toggleContent);
-            if (this.triggerClass) {
-                var els = document.querySelectorAll("." + this.triggerClass);
-                for (var i = 0; i < els.length; i++) {
-                    this.connect(els[i], "click", this._toggleContent);
-                }
-            }
         },
 
         _toggleContent: function() {
@@ -115,7 +113,7 @@ define([
                 $(this.slidecontainer).animate({
                     right: '-' + this.contentWidth + 'px'
                 }, this.showTime, "swing", function() {
-                    self._toggleOtherButtons(true);
+                    // self._toggleOtherButtons(true);
                     self._setStyleText(this.slidecontent, "display:none;");
                 });
 
@@ -148,12 +146,14 @@ define([
                     }
                 }));*/
             }
+            this._updateStorage();
         },
 
         _toggleOtherButtons: function(visible) {
             if (typeof(window.slideoutstorage) !== 'undefined' && window.slideoutstorage.length > 1) {
                 for (var j = 0; j < window.slideoutstorage.length; j++) {
-                    var item = window.slideoutstorage[j];
+                    var itemNode = window.slideoutstorage[j].domNode;
+                    var item = dijit.registry.byNode(itemNode);
                     if (item.id !== this.id) {
                         if (this.hideOthers) {
                             if (item.contentDisplay) { // the item is visible
@@ -307,7 +307,18 @@ define([
                     console.log(this.id + "._executeMicroflow error: " + error.description);
                 })
             }, this);
-        }
+        },
+
+        /**
+         * Called in _toggleDisplay, to update the window storage so that other trays will
+         * close correctly
+         */
+        _updateStorage: function() {
+            var itemFromStorage = window.slideoutstorage.find(function(item) {
+                return item.id === this.id;
+            }.bind(this));
+            itemFromStorage.contentDisplay = this.contentDisplay;
+        },
 
     });
 });
